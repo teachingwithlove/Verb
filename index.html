@@ -1,385 +1,891 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Verb Adventure!</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Verb Voyage</title>
 
-  <style>
-    * {
-      box-sizing: border-box;
-    }
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&family=Fredoka:wght@400;500;600;700&display=swap');
 
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: linear-gradient(135deg, #8ed8ff, #c9f7c5);
-      color: #243447;
-      min-height: 100vh;
-    }
+:root {
+  --purple: #39236d;
+  --deep-purple: #20113f;
+  --pink: #ff6fae;
+  --yellow: #ffd95a;
+  --blue: #6ddcff;
+  --green: #7ee081;
+  --white: #fffdf9;
+  --dark: #2b2140;
+}
 
-    .container {
-      width: 92%;
-      max-width: 750px;
-      margin: auto;
-      padding: 25px 0;
-    }
+* {
+  box-sizing: border-box;
+}
 
-    header {
-      text-align: center;
-      background: white;
-      border-radius: 25px;
-      padding: 25px;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.15);
-    }
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: "Fredoka", sans-serif;
+  color: var(--dark);
+  background:
+    radial-gradient(circle at 20% 15%, #ffffff 0 1px, transparent 2px),
+    radial-gradient(circle at 80% 30%, #ffffff 0 1px, transparent 2px),
+    radial-gradient(circle at 60% 75%, #ffffff 0 1px, transparent 2px),
+    radial-gradient(circle at 30% 90%, #ffffff 0 1px, transparent 2px),
+    linear-gradient(135deg, #20113f, #39236d 55%, #6745a3);
+  background-size: 140px 140px, 210px 210px, 180px 180px, 260px 260px, cover;
+  overflow-x: hidden;
+}
 
-    h1 {
-      color: #ff6b35;
-      margin: 0 0 10px;
-      font-size: 2.5rem;
-    }
+button {
+  font: inherit;
+  border: 0;
+  cursor: pointer;
+}
 
-    h2 {
-      color: #246bfd;
-    }
+.app {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+}
 
-    .emoji {
-      font-size: 3rem;
-    }
+.game {
+  width: 100%;
+  max-width: 1050px;
+  min-height: 700px;
+  position: relative;
+  overflow: hidden;
+  border: 5px solid rgba(255,255,255,.8);
+  border-radius: 34px;
+  background: linear-gradient(160deg, #fffef9, #f2eaff);
+  box-shadow: 0 24px 70px rgba(0,0,0,.35);
+}
 
-    .card {
-      background: white;
-      border-radius: 25px;
-      padding: 25px;
-      margin-top: 20px;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.15);
-    }
+.topbar {
+  height: 82px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 28px;
+  background: rgba(255,255,255,.9);
+  border-bottom: 3px solid #eadbff;
+  position: relative;
+  z-index: 4;
+}
 
-    .progress-area {
-      margin-bottom: 20px;
-      font-weight: bold;
-    }
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--purple);
+  font-size: 1.4rem;
+  font-weight: 800;
+}
 
-    .progress-bar {
-      width: 100%;
-      height: 18px;
-      background: #e5e7eb;
-      border-radius: 20px;
-      overflow: hidden;
-      margin-top: 8px;
-    }
+.logo span {
+  font-size: 2rem;
+  animation: float 2.5s ease-in-out infinite;
+}
 
-    .progress-fill {
-      height: 100%;
-      width: 0%;
-      background: #35c759;
-      transition: width 0.4s;
-    }
+.progress-area {
+  width: 42%;
+}
 
-    .question {
-      font-size: 1.5rem;
-      font-weight: bold;
-      text-align: center;
-      margin: 25px 0;
-    }
+.progress-label {
+  display: flex;
+  justify-content: space-between;
+  color: #77688e;
+  font-size: .85rem;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
 
-    .answers {
-      display: grid;
-      gap: 12px;
-    }
+.progress {
+  height: 13px;
+  background: #e7ddf4;
+  border-radius: 50px;
+  overflow: hidden;
+}
 
-    button {
-      border: none;
-      border-radius: 15px;
-      padding: 15px;
-      font-size: 1.05rem;
-      font-weight: bold;
-      cursor: pointer;
-      transition: transform 0.2s, background 0.2s;
-    }
+.progress-fill {
+  height: 100%;
+  width: 20%;
+  border-radius: 50px;
+  background: linear-gradient(90deg, var(--pink), #a66cff);
+  transition: width .5s ease;
+}
 
-    button:hover {
-      transform: scale(1.03);
-    }
+.sound-button {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  color: var(--purple);
+  background: #eee4ff;
+  font-size: 1.35rem;
+  transition: .2s;
+}
 
-    .answer-button {
-      background: #eef4ff;
-      color: #243447;
-      border: 2px solid #9bbcff;
-    }
+.sound-button:hover {
+  transform: scale(1.1) rotate(5deg);
+  background: var(--yellow);
+}
 
-    .answer-button:hover {
-      background: #dce9ff;
-    }
+.screen {
+  display: none;
+  min-height: 610px;
+  padding: 44px 7%;
+  position: relative;
+  animation: appear .5s ease;
+}
 
-    .correct {
-      background: #b9f6c5 !important;
-      border-color: #24a148 !important;
-    }
+.screen.active {
+  display: block;
+}
 
-    .wrong {
-      background: #ffc7c7 !important;
-      border-color: #e53935 !important;
-    }
+.center {
+  text-align: center;
+}
 
-    #feedback {
-      text-align: center;
-      font-size: 1.2rem;
-      font-weight: bold;
-      min-height: 35px;
-      margin: 20px 0;
-    }
+.story-scene {
+  min-height: 570px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
-    #nextButton,
-    #restartButton {
-      display: block;
-      margin: 15px auto 0;
-      background: #ffb703;
-      color: white;
-      width: 180px;
-    }
+.story-card {
+  max-width: 760px;
+  text-align: center;
+  position: relative;
+  z-index: 2;
+}
 
-    #nextButton:hover,
-    #restartButton:hover {
-      background: #f48c06;
-    }
+.eyebrow {
+  display: inline-block;
+  padding: 8px 18px;
+  border-radius: 30px;
+  color: #684494;
+  background: #eee2ff;
+  font-size: .9rem;
+  font-weight: 700;
+  letter-spacing: .5px;
+}
 
-    .score {
-      text-align: center;
-      font-size: 1.2rem;
-      margin-top: 15px;
-    }
+h1, h2, h3 {
+  font-family: "Baloo 2", sans-serif;
+  color: var(--purple);
+  line-height: 1.05;
+  margin: 16px 0;
+}
 
-    .hidden {
-      display: none;
-    }
+h1 {
+  font-size: clamp(3rem, 8vw, 6.5rem);
+  text-shadow: 3px 4px 0 #e9d7ff;
+}
 
-    .tip {
-      background: #fff4c2;
-      border-left: 6px solid #ffb703;
-      padding: 15px;
-      border-radius: 10px;
-      margin-top: 20px;
-    }
+h2 {
+  font-size: clamp(2.3rem, 5vw, 4rem);
+}
 
-    footer {
-      text-align: center;
-      padding: 20px;
-      font-size: 0.9rem;
-    }
-  </style>
+h3 {
+  font-size: 1.8rem;
+}
+
+.subtitle {
+  max-width: 610px;
+  margin: 0 auto 28px;
+  color: #675779;
+  font-size: 1.2rem;
+  line-height: 1.55;
+}
+
+.primary-button {
+  padding: 16px 30px;
+  border-radius: 18px;
+  color: #4e2e00;
+  background: linear-gradient(135deg, #ffd95a, #ffae42);
+  box-shadow: 0 7px 0 #d88729;
+  font-size: 1.15rem;
+  font-weight: 800;
+  transition: .18s;
+}
+
+.primary-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 0 #d88729;
+}
+
+.primary-button:active {
+  transform: translateY(4px);
+  box-shadow: 0 3px 0 #d88729;
+}
+
+.secondary-button {
+  padding: 13px 22px;
+  border-radius: 15px;
+  color: var(--purple);
+  background: #eee5ff;
+  font-weight: 700;
+}
+
+.rocket {
+  font-size: 7rem;
+  margin: 8px auto 15px;
+  display: block;
+  animation: rocketFloat 3s ease-in-out infinite;
+}
+
+.moon {
+  position: absolute;
+  right: 7%;
+  top: 8%;
+  width: 92px;
+  height: 92px;
+  border-radius: 50%;
+  background: var(--yellow);
+  box-shadow: 0 0 0 12px rgba(255,217,90,.18), 0 0 55px rgba(255,217,90,.8);
+}
+
+.planet {
+  position: absolute;
+  left: 5%;
+  bottom: 7%;
+  font-size: 5rem;
+  animation: float 3s ease-in-out infinite;
+}
+
+.lesson-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+  align-items: center;
+  max-width: 850px;
+  margin: auto;
+}
+
+.lesson-illustration {
+  min-height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 30px;
+  background: linear-gradient(145deg, #dff8ff, #d7c6ff);
+  font-size: 8rem;
+  box-shadow: inset 0 -12px 0 rgba(94,62,157,.12);
+  animation: pulseSoft 3s infinite;
+}
+
+.lesson-text {
+  text-align: left;
+}
+
+.example-word {
+  display: inline-block;
+  margin: 10px 0 18px;
+  padding: 12px 22px;
+  border-radius: 18px;
+  color: #fff;
+  background: var(--purple);
+  font-family: "Baloo 2", sans-serif;
+  font-size: 2.5rem;
+  font-weight: 800;
+  transform: rotate(-2deg);
+}
+
+.info-box {
+  padding: 18px 20px;
+  border-left: 7px solid var(--pink);
+  border-radius: 15px;
+  background: #fff;
+  color: #665975;
+  font-size: 1.05rem;
+  line-height: 1.5;
+}
+
+.practice-box {
+  max-width: 750px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.sentence-card {
+  padding: 28px;
+  margin: 24px 0;
+  border-radius: 28px;
+  color: #49356b;
+  background: #fff;
+  box-shadow: 0 10px 25px rgba(80,44,130,.12);
+  font-family: "Baloo 2", sans-serif;
+  font-size: clamp(1.6rem, 4vw, 2.5rem);
+  font-weight: 700;
+}
+
+.blank {
+  display: inline-block;
+  min-width: 120px;
+  border-bottom: 5px solid var(--pink);
+  color: var(--pink);
+}
+
+.answer-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+  max-width: 570px;
+  margin: 0 auto;
+}
+
+.answer {
+  padding: 17px;
+  border: 3px solid #e7dafa;
+  border-radius: 17px;
+  color: var(--purple);
+  background: #fff;
+  font-size: 1.15rem;
+  font-weight: 700;
+  transition: .2s;
+}
+
+.answer:hover {
+  border-color: var(--pink);
+  background: #fff2f8;
+  transform: translateY(-3px);
+}
+
+.answer.correct {
+  color: #126b35;
+  border-color: var(--green);
+  background: #dfffe5;
+  animation: bounce .5s;
+}
+
+.answer.wrong {
+  color: #922d42;
+  border-color: #ff9aac;
+  background: #ffe5ea;
+  animation: shake .4s;
+}
+
+.feedback {
+  min-height: 40px;
+  margin-top: 18px;
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.feedback.good {
+  color: #168145;
+}
+
+.feedback.try {
+  color: #b05261;
+}
+
+.stars-earned {
+  margin: 10px;
+  color: #f5b900;
+  font-size: 2rem;
+  letter-spacing: 6px;
+}
+
+.challenge-card {
+  max-width: 700px;
+  margin: 15px auto;
+  padding: 30px;
+  text-align: center;
+  border-radius: 28px;
+  background: linear-gradient(145deg, #fff, #fff6d8);
+  box-shadow: 0 12px 28px rgba(100,68,20,.15);
+}
+
+.trophy {
+  font-size: 5rem;
+  animation: bounce 1.4s infinite;
+}
+
+.score {
+  color: var(--purple);
+  font-family: "Baloo 2", sans-serif;
+  font-size: 3.5rem;
+  font-weight: 800;
+}
+
+.parent-link {
+  display: block;
+  margin-top: 22px;
+  color: #8b7b99;
+  font-size: .85rem;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.confetti {
+  position: fixed;
+  top: -20px;
+  z-index: 20;
+  font-size: 1.5rem;
+  pointer-events: none;
+  animation: fall 2.5s linear forwards;
+}
+
+@keyframes appear {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes rocketFloat {
+  0%, 100% { transform: translateY(0) rotate(-4deg); }
+  50% { transform: translateY(-18px) rotate(4deg); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes pulseSoft {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.025); }
+}
+
+@keyframes bounce {
+  0%, 100% { transform: scale(1); }
+  40% { transform: scale(1.12); }
+}
+
+@keyframes shake {
+  25% { transform: translateX(-7px); }
+  75% { transform: translateX(7px); }
+}
+
+@keyframes fall {
+  to {
+    transform: translateY(105vh) rotate(720deg);
+    opacity: 0;
+  }
+}
+
+@media (max-width: 700px) {
+  .app {
+    padding: 8px;
+  }
+
+  .game {
+    border-radius: 22px;
+  }
+
+  .topbar {
+    height: 75px;
+    padding: 12px 15px;
+  }
+
+  .logo {
+    font-size: 1rem;
+  }
+
+  .logo span {
+    font-size: 1.5rem;
+  }
+
+  .progress-area {
+    width: 35%;
+  }
+
+  .screen {
+    padding: 35px 18px;
+  }
+
+  .lesson-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .lesson-illustration {
+    min-height: 190px;
+    font-size: 5rem;
+  }
+
+  .lesson-text {
+    text-align: center;
+  }
+
+  .answer-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .moon {
+    width: 55px;
+    height: 55px;
+  }
+
+  .planet {
+    font-size: 3rem;
+  }
+}
+</style>
 </head>
 
 <body>
-  <div class="container">
 
-    <header>
-      <div class="emoji">🚀📚⭐</div>
-      <h1>Verb Adventure!</h1>
-      <p>Learn about verbs and test your skills.</p>
-    </header>
+<div class="app">
+  <main class="game">
 
-    <section class="card">
-      <h2>What is a verb?</h2>
-      <p>
-        A <strong>verb</strong> is a word that shows an action or something happening.
-      </p>
-
-      <div class="tip">
-        Examples: <strong>run</strong>, <strong>jump</strong>, <strong>eat</strong>,
-        <strong>think</strong>, and <strong>write</strong>.
+    <header class="topbar">
+      <div class="logo">
+        <span>🚀</span>
+        Verb Voyage
       </div>
-    </section>
 
-    <section class="card" id="quizCard">
       <div class="progress-area">
-        Question <span id="questionNumber">1</span> of <span id="totalQuestions">8</span>
-        <div class="progress-bar">
+        <div class="progress-label">
+          <span>Mission progress</span>
+          <span id="progressText">1 / 5</span>
+        </div>
+        <div class="progress">
           <div class="progress-fill" id="progressFill"></div>
         </div>
       </div>
 
-      <div class="question" id="questionText"></div>
+      <button class="sound-button" id="soundButton" aria-label="Turn sound on or off">🔊</button>
+    </header>
 
-      <div class="answers" id="answers"></div>
+    <!-- SCREEN 1: STORY -->
+    <section class="screen active story-scene" id="screen1">
+      <div class="moon"></div>
+      <div class="planet">🪐</div>
 
-      <div id="feedback"></div>
-
-      <button id="nextButton" class="hidden">Next Question ➡️</button>
-
-      <div class="score">
-        Score: <span id="score">0</span> ⭐
+      <div class="story-card">
+        <span class="eyebrow">A brand-new language adventure</span>
+        <div class="rocket">🚀</div>
+        <h1>Verb Voyage</h1>
+        <p class="subtitle">
+          Captain, we need your help! Our rocket is ready to travel through space,
+          but it needs powerful action words to take off.
+        </p>
+        <button class="primary-button" onclick="goToScreen(2); playSound('start')">
+          Begin the mission ✨
+        </button>
+        <span class="parent-link" onclick="goToScreen(5)">
+          Parent option: go straight to the final challenge
+        </span>
       </div>
     </section>
 
-    <section class="card hidden" id="resultCard">
-      <h2>🎉 Quiz Complete!</h2>
-      <p id="resultMessage"></p>
-      <button id="restartButton">Play Again 🔄</button>
+    <!-- SCREEN 2: INTRODUCTION -->
+    <section class="screen" id="screen2">
+      <div class="lesson-layout">
+        <div class="lesson-illustration">🧑‍🚀</div>
+
+        <div class="lesson-text">
+          <span class="eyebrow">Mission briefing</span>
+          <h2>What is a verb?</h2>
+          <p class="subtitle">
+            A verb is an action word. It tells us what someone or something
+            <strong>does</strong>.
+          </p>
+
+          <div class="info-box">
+            Look around! When you <strong>jump</strong>, <strong>run</strong>,
+            or <strong>smile</strong>, you are doing an action.
+          </div>
+
+          <br>
+
+          <button class="primary-button" onclick="goToScreen(3); playSound('click')">
+            Show me more 👀
+          </button>
+        </div>
+      </div>
     </section>
 
-    <footer>
-      Keep practicing and become a verb superstar! 🌟
-    </footer>
+    <!-- SCREEN 3: REPEATED EXAMPLES -->
+    <section class="screen" id="screen3">
+      <div class="lesson-layout">
+        <div class="lesson-illustration" id="exampleEmoji">🏃</div>
 
-  </div>
+        <div class="lesson-text">
+          <span class="eyebrow">Power word collected</span>
+          <h2>Verbs show action!</h2>
 
-  <script>
-    const questions = [
-      {
-        question: "Which word is a verb?",
-        answers: ["happy", "jump", "blue", "tall"],
-        correct: "jump"
-      },
-      {
-        question: "Choose the verb: The dog ___ fast.",
-        answers: ["runs", "soft", "small", "brown"],
-        correct: "runs"
-      },
-      {
-        question: "Which word shows an action?",
-        answers: ["sing", "yellow", "quiet", "round"],
-        correct: "sing"
-      },
-      {
-        question: "Choose the verb: Maria ___ a book.",
-        answers: ["reads", "book", "funny", "green"],
-        correct: "reads"
-      },
-      {
-        question: "Which word is a verb?",
-        answers: ["dance", "beautiful", "tiny", "red"],
-        correct: "dance"
-      },
-      {
-        question: "Choose the verb: Birds ___ in the sky.",
-        answers: ["fly", "sky", "pretty", "blue"],
-        correct: "fly"
-      },
-      {
-        question: "Which word shows an action?",
-        answers: ["sleep", "soft", "cold", "big"],
-        correct: "sleep"
-      },
-      {
-        question: "Choose the verb: We ___ breakfast.",
-        answers: ["eat", "morning", "delicious", "table"],
-        correct: "eat"
-      }
-    ];
+          <div class="example-word" id="exampleWord">run</div>
 
-    let currentQuestion = 0;
-    let score = 0;
-    let answered = false;
+          <p class="subtitle" id="exampleSentence">
+            The astronaut can run to the rocket.
+          </p>
 
-    const questionText = document.getElementById("questionText");
-    const answersDiv = document.getElementById("answers");
-    const feedback = document.getElementById("feedback");
-    const nextButton = document.getElementById("nextButton");
-    const scoreDisplay = document.getElementById("score");
-    const questionNumber = document.getElementById("questionNumber");
-    const totalQuestions = document.getElementById("totalQuestions");
-    const progressFill = document.getElementById("progressFill");
-    const quizCard = document.getElementById("quizCard");
-    const resultCard = document.getElementById("resultCard");
-    const resultMessage = document.getElementById("resultMessage");
-    const restartButton = document.getElementById("restartButton");
+          <div class="info-box">
+            Say it with me: <strong id="repeatWord">run</strong>!
+          </div>
 
-    totalQuestions.textContent = questions.length;
+          <br>
 
-    function showQuestion() {
-      answered = false;
-      feedback.textContent = "";
-      nextButton.classList.add("hidden");
+          <button class="secondary-button" onclick="changeExample(); playSound('click')">
+            Another example 🔄
+          </button>
 
-      const item = questions[currentQuestion];
+          <button class="primary-button" onclick="goToScreen(4); playSound('click')">
+            Practice time 🌟
+          </button>
+        </div>
+      </div>
+    </section>
 
-      questionNumber.textContent = currentQuestion + 1;
-      questionText.textContent = item.question;
-      progressFill.style.width =
-        ((currentQuestion + 1) / questions.length) * 100 + "%";
+    <!-- SCREEN 4: PRACTICE -->
+    <section class="screen" id="screen4">
+      <div class="practice-box">
+        <span class="eyebrow">Captain's practice</span>
+        <h2>Choose the action word</h2>
+        <p class="subtitle">
+          Read the sentence and choose the word that makes sense.
+        </p>
 
-      answersDiv.innerHTML = "";
+        <div class="sentence-card">
+          The astronaut can <span class="blank">_____</span> to the moon.
+        </div>
 
-      item.answers.forEach(answer => {
-        const button = document.createElement("button");
-        button.textContent = answer;
-        button.className = "answer-button";
+        <div class="answer-grid">
+          <button class="answer" onclick="answerQuestion(this, false)">sleep</button>
+          <button class="answer" onclick="answerQuestion(this, true)">fly</button>
+          <button class="answer" onclick="answerQuestion(this, false)">blue</button>
+          <button class="answer" onclick="answerQuestion(this, false)">planet</button>
+        </div>
 
-        button.addEventListener("click", () => checkAnswer(button, answer));
+        <div class="feedback" id="feedback"></div>
+        <div class="stars-earned" id="starsEarned"></div>
 
-        answersDiv.appendChild(button);
-      });
-    }
+        <button class="primary-button" id="continueButton" style="display:none" onclick="goToScreen(5); playSound('success')">
+          Continue to the mission challenge 🚀
+        </button>
+      </div>
+    </section>
 
-    function checkAnswer(button, answer) {
-      if (answered) return;
+    <!-- SCREEN 5: FINAL CHALLENGE -->
+    <section class="screen" id="screen5">
+      <div class="challenge-card">
+        <div class="trophy">🏆</div>
+        <span class="eyebrow">Final mission</span>
+        <h2>Can you power the rocket?</h2>
+        <p class="subtitle">
+          Choose the verb that completes the sentence.
+        </p>
 
-      answered = true;
-      const correctAnswer = questions[currentQuestion].correct;
-      const allButtons = document.querySelectorAll(".answer-button");
+        <div class="sentence-card">
+          The friends <span class="blank">_____</span> a song.
+        </div>
 
-      allButtons.forEach(btn => {
-        btn.disabled = true;
+        <div class="answer-grid">
+          <button class="answer" onclick="finalAnswer(this, false)">yellow</button>
+          <button class="answer" onclick="finalAnswer(this, true)">sing</button>
+          <button class="answer" onclick="finalAnswer(this, false)">rocket</button>
+          <button class="answer" onclick="finalAnswer(this, false)">quiet</button>
+        </div>
 
-        if (btn.textContent === correctAnswer) {
-          btn.classList.add("correct");
-        }
-      });
+        <div class="feedback" id="finalFeedback"></div>
+        <div class="score" id="score"></div>
 
-      if (answer === correctAnswer) {
-        score++;
-        scoreDisplay.textContent = score;
-        feedback.textContent = "✅ Correct! Great job!";
-        feedback.style.color = "#16803c";
-        button.classList.add("correct");
-      } else {
-        feedback.textContent = "❌ Not quite. Try the next one!";
-        feedback.style.color = "#d62828";
-        button.classList.add("wrong");
-      }
+        <button class="primary-button" id="restartButton" style="display:none" onclick="restartMission()">
+          Fly again 🔁
+        </button>
+      </div>
+    </section>
 
-      nextButton.classList.remove("hidden");
-    }
+  </main>
+</div>
 
-    nextButton.addEventListener("click", () => {
-      currentQuestion++;
+<script>
+let currentScreen = 1;
+let practiceCorrect = false;
+let finalCorrect = false;
+let soundOn = true;
 
-      if (currentQuestion < questions.length) {
-        showQuestion();
-      } else {
-        showResults();
-      }
-    });
+const examples = [
+  {
+    word: "run",
+    emoji: "🏃",
+    sentence: "The astronaut can run to the rocket."
+  },
+  {
+    word: "jump",
+    emoji: "🤸",
+    sentence: "The astronaut can jump over the moon rock."
+  },
+  {
+    word: "wave",
+    emoji: "👋",
+    sentence: "The astronaut can wave to a new friend."
+  },
+  {
+    word: "dance",
+    emoji: "💃",
+    sentence: "The astronauts can dance in space."
+  }
+];
 
-    function showResults() {
-      quizCard.classList.add("hidden");
-      resultCard.classList.remove("hidden");
+let exampleIndex = 0;
 
-      const percentage = Math.round((score / questions.length) * 100);
+function goToScreen(number) {
+  document.querySelectorAll(".screen").forEach(screen => {
+    screen.classList.remove("active");
+  });
 
-      if (percentage === 100) {
-        resultMessage.textContent =
-          `Perfect score! You got ${score} out of ${questions.length}. You are a verb superstar! 🌟`;
-      } else if (percentage >= 60) {
-        resultMessage.textContent =
-          `Well done! You got ${score} out of ${questions.length}. Keep practicing! 👍`;
-      } else {
-        resultMessage.textContent =
-          `You got ${score} out of ${questions.length}. Practice makes progress! 💪`;
-      }
-    }
+  document.getElementById("screen" + number).classList.add("active");
+  currentScreen = number;
 
-    restartButton.addEventListener("click", () => {
-      currentQuestion = 0;
-      score = 0;
-      scoreDisplay.textContent = score;
-      resultCard.classList.add("hidden");
-      quizCard.classList.remove("hidden");
-      showQuestion();
-    });
+  const progress = {
+    1: 20,
+    2: 40,
+    3: 60,
+    4: 80,
+    5: 100
+  };
 
-    showQuestion();
-  </script>
+  document.getElementById("progressFill").style.width = progress[number] + "%";
+  document.getElementById("progressText").textContent = number + " / 5";
+
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function changeExample() {
+  exampleIndex = (exampleIndex + 1) % examples.length;
+
+  const example = examples[exampleIndex];
+
+  document.getElementById("exampleWord").textContent = example.word;
+  document.getElementById("repeatWord").textContent = example.word;
+  document.getElementById("exampleEmoji").textContent = example.emoji;
+  document.getElementById("exampleSentence").textContent = example.sentence;
+
+  playSound("click");
+}
+
+function answerQuestion(button, isCorrect) {
+  const buttons = document.querySelectorAll("#screen4 .answer");
+
+  if (practiceCorrect) return;
+
+  if (isCorrect) {
+    button.classList.add("correct");
+    document.getElementById("feedback").textContent =
+      "Wonderful! Fly is a verb because it shows an action.";
+    document.getElementById("feedback").className = "feedback good";
+    document.getElementById("starsEarned").textContent = "⭐ ⭐ ⭐";
+    document.getElementById("continueButton").style.display = "inline-block";
+    practiceCorrect = true;
+    playSound("success");
+    celebrate();
+  } else {
+    button.classList.add("wrong");
+    document.getElementById("feedback").textContent =
+      "Almost! Try again. Look for the word that shows an action.";
+    document.getElementById("feedback").className = "feedback try";
+    playSound("wrong");
+
+    setTimeout(() => {
+      button.classList.remove("wrong");
+    }, 600);
+  }
+}
+
+function finalAnswer(button, isCorrect) {
+  if (finalCorrect) return;
+
+  if (isCorrect) {
+    button.classList.add("correct");
+    document.getElementById("finalFeedback").textContent =
+      "Mission complete! Sing is an action word.";
+    document.getElementById("finalFeedback").className = "feedback good";
+    document.getElementById("score").textContent = "3 stars earned!";
+    document.getElementById("restartButton").style.display = "inline-block";
+    finalCorrect = true;
+    playSound("success");
+    celebrate();
+  } else {
+    button.classList.add("wrong");
+    document.getElementById("finalFeedback").textContent =
+      "Good try, Captain! Find the word that shows an action.";
+    document.getElementById("finalFeedback").className = "feedback try";
+    playSound("wrong");
+
+    setTimeout(() => {
+      button.classList.remove("wrong");
+    }, 600);
+  }
+}
+
+function restartMission() {
+  practiceCorrect = false;
+  finalCorrect = false;
+
+  document.querySelectorAll(".answer").forEach(button => {
+    button.classList.remove("correct", "wrong");
+  });
+
+  document.getElementById("feedback").textContent = "";
+  document.getElementById("finalFeedback").textContent = "";
+  document.getElementById("starsEarned").textContent = "";
+  document.getElementById("score").textContent = "";
+  document.getElementById("continueButton").style.display = "none";
+  document.getElementById("restartButton").style.display = "none";
+
+  goToScreen(1);
+  playSound("start");
+}
+
+function celebrate() {
+  const symbols = ["⭐", "✨", "🚀", "🌟", "💫"];
+
+  for (let i = 0; i < 24; i++) {
+    const piece = document.createElement("div");
+    piece.className = "confetti";
+    piece.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+    piece.style.left = Math.random() * 100 + "vw";
+    piece.style.animationDelay = Math.random() * .7 + "s";
+    document.body.appendChild(piece);
+
+    setTimeout(() => piece.remove(), 3200);
+  }
+}
+
+function playSound(type) {
+  if (!soundOn) return;
+
+  const AudioContext = window.AudioContext || window.webkitAudioContext;
+  if (!AudioContext) return;
+
+  const audio = new AudioContext();
+  const oscillator = audio.createOscillator();
+  const gain = audio.createGain();
+
+  oscillator.connect(gain);
+  gain.connect(audio.destination);
+
+  const sounds = {
+    click: { frequency: 540, duration: .08 },
+    start: { frequency: 420, duration: .18 },
+    success: { frequency: 760, duration: .25 },
+    wrong: { frequency: 180, duration: .18 }
+  };
+
+  const sound = sounds[type];
+
+  oscillator.frequency.value = sound.frequency;
+  oscillator.type = type === "wrong" ? "sawtooth" : "sine";
+
+  gain.gain.setValueAtTime(.001, audio.currentTime);
+  gain.gain.exponentialRampToValueAtTime(.18, audio.currentTime + .01);
+  gain.gain.exponentialRampToValueAtTime(.001, audio.currentTime + sound.duration);
+
+  oscillator.start();
+  oscillator.stop(audio.currentTime + sound.duration);
+}
+
+document.getElementById("soundButton").addEventListener("click", function() {
+  soundOn = !soundOn;
+  this.textContent = soundOn ? "🔊" : "🔇";
+  if (soundOn) playSound("click");
+});
+</script>
+
 </body>
 </html>
